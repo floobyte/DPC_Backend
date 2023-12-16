@@ -3,9 +3,10 @@ const asyncHandler = require("express-async-handler");
 
 const createStudentCorner = asyncHandler(async (req, res) => {
   try {
-    const studentCorner = req.body;
+    const { heading, url } = req.body;
     const newStudentCorner = new StudentCorner({
-      studentCorner,
+      heading,
+      url,
     });
 
     const saved = await newStudentCorner.save();
