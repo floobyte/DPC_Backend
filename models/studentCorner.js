@@ -7,3 +7,5 @@ const StudentCorner = new mongoose.Schema({
   },
   url: String,
 });
+
+module.exports = mongoose.model("StudentCorner", StudentCorner);
