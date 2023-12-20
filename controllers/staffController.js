@@ -1,6 +1,7 @@
 const Staff = require("../models/staff");
 const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
+const fs = require("fs");
 
 const createStaff = asyncHandler(async (req, res) => {
   try {
@@ -21,8 +22,16 @@ const createStaff = asyncHandler(async (req, res) => {
     const file = req.files.image;
 
     cloudinary.uploader.upload(file.tempFilePath, async (error, result) => {
+      if (file.tempFilePath) {
+        fs.unlinkSync(file.tempFilePath);
+      }
+
       if (error) {
-        res.status(400).json({ error: error.message });
+        return res.status(400).json({
+          success: false,
+          message: "Error uploading image to Cloudinary",
+          error: error.message,
+        });
       } else {
         const newStaff = new Staff({
           name,
@@ -40,11 +49,15 @@ const createStaff = asyncHandler(async (req, res) => {
         });
 
         const savedStaff = await newStaff.save();
-        res.status(201).json(savedStaff);
+        res.status(201).json({ success: true, data: savedStaff });
       }
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({
+      success: false,
+      message: "Error creating staff",
+      error: error.message,
+    });
   }
 });
 
@@ -76,21 +89,35 @@ const getAllStaff = async (req, res) => {
   }
 };
 
-const deleteStaffById = async (req, res) => {
-  const staffId = req.params.id;
-  try {
-    const staffToDelete = await Staff.findById(staffId);
+const deleteStaffById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
 
-    if (!staffToDelete) {
-      return res.status(404).json({ message: "Staff not found" });
+  try {
+    const staff = await Staff.findById(id);
+
+    if (!staff) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Staff not found" });
     }
 
-    const deletedStaff = await Staff.findByIdAndDelete(staffId);
-
-    res.status(200).json(deletedStaff);
+    await staff.remove();
+    res
+      .status(200)
+      .json({ success: true, message: "Staff deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    if (error.name === "CastError" && error.kind === "ObjectId") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error deleting staff",
+      error: error.message,
+    });
   }
-};
+});
 
 module.exports = { createStaff, getStaffById, getAllStaff, deleteStaffById };

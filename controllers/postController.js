@@ -1,6 +1,7 @@
 const Post = require("../models/post");
 const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
+const fs = require("fs");
 
 const createPost = asyncHandler(async (req, res) => {
   try {
@@ -8,8 +9,16 @@ const createPost = asyncHandler(async (req, res) => {
     const file = req.files.image;
 
     cloudinary.uploader.upload(file.tempFilePath, async (error, result) => {
+      if (file.tempFilePath) {
+        fs.unlinkSync(file.tempFilePath);
+      }
+
       if (error) {
-        res.status(400).json({ error: error.message });
+        res.status(400).json({
+          success: false,
+          message: "Error uploading image to Cloudinary",
+          error: error.message,
+        });
       } else {
         const newPost = new Post({
           caption,
@@ -17,11 +26,15 @@ const createPost = asyncHandler(async (req, res) => {
         });
 
         const savedPost = await newPost.save();
-        res.status(201).json(savedPost);
+        res.status(201).json({ success: true, data: savedPost });
       }
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({
+      success: false,
+      message: "Error creating post",
+      error: error.message,
+    });
   }
 });
 

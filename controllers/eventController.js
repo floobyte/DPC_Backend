@@ -1,6 +1,7 @@
 const eventData = require("../models/eventData");
 const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
+const fs = require("fs");
 
 const createEvent = asyncHandler(async (req, res) => {
   try {
@@ -12,6 +13,10 @@ const createEvent = asyncHandler(async (req, res) => {
 
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload(file.tempFilePath, (error, result) => {
+          if (file.tempFilePath) {
+            fs.unlinkSync(file.tempFilePath);
+          }
+
           if (error) {
             reject(error);
           } else {
@@ -30,9 +35,13 @@ const createEvent = asyncHandler(async (req, res) => {
     });
 
     const savedEvent = await newEvent.save();
-    res.status(201).json(savedEvent);
+    res.status(201).json({ success: true, data: savedEvent });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({
+      success: false,
+      message: "Error creating event",
+      error: error.message,
+    });
   }
 });
 
