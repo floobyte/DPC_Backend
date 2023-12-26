@@ -8,7 +8,7 @@ const {
   deleteDownloadData,
 } = require("../controllers/downloadController");
 
-router.post("/create", createDownload);
+router.post("/create", validateToken, createDownload);
 router.get("/id/:id", getDownloadDataById);
 router.get("/all", getAllDownloadData);
 router.delete("/delete/:id", deleteDownloadData);

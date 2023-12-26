@@ -1,11 +1,12 @@
 const DownloadData = require("../models/downloadData");
 const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
+const fs = require("fs");
 
 const createDownload = asyncHandler(async (req, res) => {
   try {
     const { title } = req.body;
-    const file = req.files.image;
+    const file = req.files.pdf;
 
     if (!file || file.mimetype !== "application/pdf") {
       return res.status(400).json({
@@ -22,7 +23,7 @@ const createDownload = asyncHandler(async (req, res) => {
       if (error) {
         res.status(400).json({
           success: false,
-          message: "Error uploading image to Cloudinary",
+          message: "Error uploading pdf to Cloudinary",
           error: error.message,
         });
       } else {
