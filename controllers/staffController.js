@@ -1,4 +1,5 @@
 const Staff = require("../models/staff");
+const Department = require("../models/department");
 const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
 const fs = require("fs");
@@ -49,6 +50,13 @@ const createStaff = asyncHandler(async (req, res) => {
         });
 
         const savedStaff = await newStaff.save();
+
+        await Department.findByIdAndUpdate(
+          department,
+          { $push: { staffList: savedStaff._id } },
+          { new: true }
+        );
+
         res.status(201).json({ success: true, data: savedStaff });
       }
     });

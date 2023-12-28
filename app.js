@@ -13,6 +13,7 @@ const noticeRouter = require("./routes/noticeBoardRouter");
 const studentCornerRouter = require("./routes/studentCornerRouter");
 const downloadRouter = require("./routes/downloadDataRouter");
 const admissionRouter = require("./routes/admissionRouter");
+const departmentRouter = require("./routes/departmentRouter");
 const app = express();
 require("dotenv/config");
 const fileUpload = require("express-fileupload");
@@ -39,6 +40,7 @@ app.use("/api/notice", noticeRouter);
 app.use("/api/studentcorner", studentCornerRouter);
 app.use("/api/downloaddata", downloadRouter);
 app.use("/api/admission", admissionRouter);
+app.use("/api/department", departmentRouter);
 
 app.use(errorHandler);
 

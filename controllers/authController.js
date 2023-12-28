@@ -7,14 +7,14 @@ const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
   port: 587,
   auth: {
-    user: "sierra.mills@ethereal.email",
-    pass: "QkckTCQhEyGV1addS3",
+    user: "margarete49@ethereal.email",
+    pass: "Keb4wXaZQfnXKtEq79",
   },
 });
 
 function sendConfirmationEmailToAdmin(name, email) {
   const mailOptions = {
-    from: "sierra.mills@ethereal.email",
+    from: "margarete49@ethereal.email",
     to: "rajivsuting@gmail.com",
     subject: "New User Registration Approval",
     html: `
