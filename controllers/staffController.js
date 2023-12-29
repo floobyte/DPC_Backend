@@ -72,7 +72,9 @@ const createStaff = asyncHandler(async (req, res) => {
 const getStaffById = async (req, res) => {
   try {
     const staffId = req.params.id;
-    const existStaff = await Staff.findById(staffId);
+    const existStaff = await Staff.findById(staffId)
+      .populate("department")
+      .exec();
 
     if (!existStaff) {
       return res.status(404).json({ error: "Staff not found" });
@@ -86,7 +88,7 @@ const getStaffById = async (req, res) => {
 
 const getAllStaff = async (req, res) => {
   try {
-    const staffList = await Staff.find({});
+    const staffList = await Staff.find({}).populate("department").exec();
     if (staffList.length === 0) {
       res.status(204).json({ message: "No staffs available" });
     } else {
