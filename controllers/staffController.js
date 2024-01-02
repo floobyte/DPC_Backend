@@ -99,35 +99,46 @@ const getAllStaff = async (req, res) => {
   }
 };
 
-const deleteStaffById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
+const deleteStaffById = async (req, res) => {
   try {
-    const staff = await Staff.findById(id);
+    const id = req.params.id;
 
-    if (!staff) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Staff not found" });
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Staff ID is required.",
+      });
     }
 
-    await staff.remove();
-    res
-      .status(200)
-      .json({ success: true, message: "Staff deleted successfully" });
+    const deletedAdmission = await Staff.findByIdAndDelete(id);
+
+    if (!deletedAdmission) {
+      return res.status(404).json({
+        success: false,
+        message: "Staff not found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: deletedAdmission,
+      message: "Staff deleted successfully.",
+    });
   } catch (error) {
+    console.error(error);
     if (error.name === "CastError" && error.kind === "ObjectId") {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid ID format" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Staff ID format.",
+      });
     }
 
     res.status(500).json({
       success: false,
-      message: "Error deleting staff",
+      message: "Error deleting admission record.",
       error: error.message,
     });
   }
-});
+};
 
 module.exports = { createStaff, getStaffById, getAllStaff, deleteStaffById };

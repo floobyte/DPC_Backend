@@ -7,11 +7,13 @@ const {
   getAllAdmission,
   getAdmissionById,
   deleteAdmission,
+  acceptAdmission,
 } = require("../controllers/admissionController");
 
 router.post("/create", createAdmission);
 router.get("/id/:id", getAdmissionById);
 router.get("/all", getAllAdmission);
-router.delete("/delete/:id", validateToken, deleteAdmission);
+router.delete("/delete/:id", deleteAdmission);
+router.patch("/accept/:id", acceptAdmission);
 
 module.exports = router;

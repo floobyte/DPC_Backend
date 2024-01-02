@@ -37,7 +37,7 @@ const createDepartment = asyncHandler(async (req, res) => {
 
 const getAllDepartments = async (req, res) => {
   try {
-    const departments = await Department.find();
+    const departments = await Department.find().populate("hod").exec();
 
     if (departments.length === 0) {
       return res
@@ -57,7 +57,10 @@ const getAllDepartments = async (req, res) => {
 const getDepartmentById = async (req, res) => {
   try {
     const depId = req.params.id;
-    const exist = await Department.findById(depId);
+    const exist = await Department.findById(depId)
+      .populate("hod")
+      .populate("staffList")
+      .exec();
 
     if (!exist) {
       return res.status(404).json({ error: "Department not found" });
@@ -153,10 +156,98 @@ const updateDepartmentById = async (req, res) => {
   }
 };
 
+const addHodToDepartment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { departmentName } = req.body;
+
+    if (!departmentName || !id) {
+      return res
+        .status(400)
+        .json({ error: "Department name and HOD ID are required" });
+    }
+
+    const department = await Department.findOne({ departmentName });
+
+    if (!department) {
+      return res.status(404).json({ error: "Department not found" });
+    }
+
+    if (department.hod && department.hod.toString() === id) {
+      return res
+        .status(400)
+        .json({ error: "The HOD is already assigned to this department" });
+    }
+
+    const existingHod = await Department.findOne({ hod: id });
+    if (
+      existingHod &&
+      existingHod._id.toString() !== department._id.toString()
+    ) {
+      return res
+        .status(400)
+        .json({ error: "The HOD is already assigned to another department" });
+    }
+
+    department.hod = id;
+
+    await department.save();
+
+    return res.json({
+      success: true,
+      message: "HOD added to department successfully",
+    });
+  } catch (error) {
+    console.error("An unexpected error occurred:", error);
+    return res.status(500).json({ error: "Failed to add HOD to department" });
+  }
+};
+
+const addMembersToDepartment = async (req, res) => {
+  try {
+    const { departmentId } = req.params;
+    const { memberId } = req.body;
+
+    if (!departmentId || !memberId) {
+      return res
+        .status(400)
+        .json({ error: "Department ID and member ID are required" });
+    }
+
+    const department = await Department.findById(departmentId);
+
+    if (!department) {
+      return res.status(404).json({ error: "Department not found" });
+    }
+
+    if (department.staffList.includes(memberId)) {
+      return res
+        .status(400)
+        .json({ error: "Member is already in the department" });
+    }
+
+    department.staffList.push(memberId);
+
+    await department.save();
+
+    return res.json({
+      success: true,
+      message: "Member added to department successfully",
+    });
+  } catch (error) {
+    console.error("An unexpected error occurred:", error);
+    return res
+      .status(500)
+      .json({ error: "Failed to add member to department" });
+  }
+};
+
 module.exports = {
   createDepartment,
   getAllDepartments,
   getDepartmentById,
   deleteDepartmentById,
   updateDepartmentById,
+  addHodToDepartment,
+  addMembersToDepartment,
 };

@@ -11,6 +11,6 @@ const {
 router.post("/create", validateToken, createStaff);
 router.get("/all", getAllStaff);
 router.get("/:id", getStaffById);
-router.delete("/delete/:id", deleteStaffById);
+router.delete("/delete/:id", validateToken, deleteStaffById);
 
 module.exports = router;

@@ -3,12 +3,21 @@ const asyncHandler = require("express-async-handler");
 
 const createAdmission = asyncHandler(async (req, res) => {
   try {
-    const { name, email, phone, gender, dob, course } = req.body;
+    const { name, email, phone, gender, dob, course, percentage } = req.body;
 
     if (!name || !email || !phone || !gender || !dob) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required information for admission.",
+      });
+    }
+
+    const existingAdmission = await Admission.findOne({ email });
+
+    if (existingAdmission) {
+      return res.status(400).json({
+        success: false,
+        message: "An admission with the same email already exists.",
       });
     }
 
@@ -19,6 +28,8 @@ const createAdmission = asyncHandler(async (req, res) => {
       gender,
       dob,
       course,
+      status: "Pending",
+      percentage,
     });
 
     const savedAdmission = await newAdmission.save();
@@ -146,9 +157,43 @@ const deleteAdmission = async (req, res) => {
   }
 };
 
+const acceptAdmission = async (req, res) => {
+  const admissionId = req.params.id;
+
+  try {
+    const admission = await Admission.findById(admissionId);
+
+    if (!admission) {
+      return res.status(404).json({
+        success: false,
+        message: "Admission not found.",
+      });
+    }
+
+    admission.status = "Accepted";
+
+    await admission.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Admission accepted successfully.",
+      data: admission,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Error accepting admission.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createAdmission,
   getAllAdmission,
   getAdmissionById,
   deleteAdmission,
+  acceptAdmission,
 };

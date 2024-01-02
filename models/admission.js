@@ -22,6 +22,8 @@ const Admission = new mongoose.Schema({
     required: true,
   },
   course: String,
+  status: String,
+  percentage: String,
 });
 
 module.exports = mongoose.model("Admission", Admission);
