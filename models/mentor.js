@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const Story = new mongoose.Schema({
-  title: {
+const Mentor = new mongoose.Schema({
+  name: {
     type: String,
     required: true,
   },
@@ -12,4 +12,4 @@ const Story = new mongoose.Schema({
   image: String,
 });
 
-module.exports = mongoose.model("Story", Story);
+module.exports = mongoose.model("Mentor", Mentor);

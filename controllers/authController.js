@@ -4,17 +4,17 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
+  host: "mail.floobyte.com",
+  port: 465,
   auth: {
-    user: "margarete49@ethereal.email",
-    pass: "Keb4wXaZQfnXKtEq79",
+    user: "rajiv.s@floobyte.com",
+    pass: "suting@123",
   },
 });
 
 function sendConfirmationEmailToAdmin(name, email) {
   const mailOptions = {
-    from: "margarete49@ethereal.email",
+    from: "rajiv.s@floobyte.com",
     to: "rajivsuting@gmail.com",
     subject: "New User Registration Approval",
     html: `

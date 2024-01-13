@@ -14,6 +14,10 @@ const studentCornerRouter = require("./routes/studentCornerRouter");
 const downloadRouter = require("./routes/downloadDataRouter");
 const admissionRouter = require("./routes/admissionRouter");
 const departmentRouter = require("./routes/departmentRouter");
+const storyRouter = require("./routes/storyRouter");
+const blogRouter = require("./routes/blogRouter");
+const mentorRouter = require("./routes/mentorRouter");
+const studentRouter = require("./routes/studentRouter");
 const app = express();
 require("dotenv/config");
 const fileUpload = require("express-fileupload");
@@ -22,7 +26,7 @@ const cors = require("cors");
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -41,6 +45,10 @@ app.use("/api/studentcorner", studentCornerRouter);
 app.use("/api/downloaddata", downloadRouter);
 app.use("/api/admission", admissionRouter);
 app.use("/api/department", departmentRouter);
+app.use("/api/blog", blogRouter);
+app.use("/api/student", studentRouter);
+app.use("/b-u/story", storyRouter);
+app.use("/b-u/mentor", mentorRouter);
 
 app.use(errorHandler);
 
