@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
 const fs = require("fs");
 
-const createPost = asyncHandler(async (req, res) => {
+const createPost = async (req, res) => {
   try {
     const { caption } = req.body;
     const file = req.files.image;
@@ -36,7 +36,7 @@ const createPost = asyncHandler(async (req, res) => {
       error: error.message,
     });
   }
-});
+};
 
 const getAllPosts = async (req, res) => {
   try {
