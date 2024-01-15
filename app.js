@@ -30,7 +30,7 @@ const corsOptions = {
   origin: [
     "https://admin.dpccollege.com",
     "http://127.0.0.1:5500",
-    "https://magenta-unicorn-663904.netlify.app/",
+    "https://magenta-unicorn-663904.netlify.app",
   ],
   credentials: true,
 };
