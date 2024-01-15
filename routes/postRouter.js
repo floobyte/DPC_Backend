@@ -1,6 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const validateToken = require("../middleware/validateToken");
+const upload = require("../utils/multerConfig");
 
 const {
   createPost,
@@ -10,7 +11,7 @@ const {
   deletePost,
 } = require("../controllers/postController");
 
-router.post("/create", validateToken, createPost);
+router.post("/create", upload.single("image"), createPost);
 router.get("/all", getAllPosts);
 router.get("/:id", getPostById);
 router.put("/update/:id", validateToken, updatePostById);
