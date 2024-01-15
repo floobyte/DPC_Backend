@@ -18,6 +18,7 @@ const storyRouter = require("./routes/storyRouter");
 const blogRouter = require("./routes/blogRouter");
 const mentorRouter = require("./routes/mentorRouter");
 const studentRouter = require("./routes/studentRouter");
+
 const app = express();
 require("dotenv/config");
 const fileUpload = require("express-fileupload");
@@ -25,16 +26,16 @@ const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
 app.use(
   cors({
     origin: "*",
-    methods: ["GET", "POST"],
-
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   })
 );
-// app.use(cors());
+
+app.use(express.json());
+
 app.use(
   fileUpload({
     useTempFiles: true,
