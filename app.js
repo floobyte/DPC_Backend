@@ -26,13 +26,7 @@ const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 
-const corsOptions = {
-  origin: "https://admin.dpccollege.com",
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 app.use(
