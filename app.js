@@ -27,7 +27,11 @@ const cors = require("cors");
 const port = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: ["https://admin.dpccollege.com", "http://127.0.0.1:5500"],
+  origin: [
+    "https://admin.dpccollege.com",
+    "http://127.0.0.1:5500",
+    "https://magenta-unicorn-663904.netlify.app/",
+  ],
   credentials: true,
 };
 
