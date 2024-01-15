@@ -26,8 +26,15 @@ const cors = require("cors");
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors({ origin: "*" }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+
+    allowedHeaders: ["Content-Type"],
+  })
+);
+// app.use(cors());
 app.use(
   fileUpload({
     useTempFiles: true,
