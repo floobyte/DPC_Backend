@@ -22,7 +22,7 @@ const createPost = async (req, res) => {
       } else {
         const newPost = new Post({
           caption,
-          imageUrl: result.url,
+          imageUrl: result.secure_url,
         });
 
         const savedPost = await newPost.save();
