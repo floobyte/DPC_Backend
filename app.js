@@ -35,14 +35,6 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use((req, res, next) => {
-  console.log("CORS middleware executed");
-  res.header("Access-Control-Allow-Origin", corsOptions.origin.join(", "));
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
-
 app.use(cors(corsOptions));
 app.use(express.json());
 
