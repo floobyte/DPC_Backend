@@ -28,7 +28,9 @@ const port = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://admin.dpccollege.com",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
