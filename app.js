@@ -13,7 +13,7 @@ const noticeRouter = require("./routes/noticeBoardRouter");
 const studentCornerRouter = require("./routes/studentCornerRouter");
 const downloadRouter = require("./routes/downloadDataRouter");
 const admissionRouter = require("./routes/admissionRouter");
-const departmentRouter = require("./routes/departmentRouter");
+const departmentRouter = "./routes/departmentRouter";
 const storyRouter = require("./routes/storyRouter");
 const blogRouter = require("./routes/blogRouter");
 const mentorRouter = require("./routes/mentorRouter");
@@ -26,15 +26,21 @@ const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 
-const corsOptions = {
-  origin: [
-    "https://admin.dpccollege.com/",
-    "http://127.0.0.1:5500",
-    "https://magenta-unicorn-663904.netlify.app",
-  ],
-  credentials: true,
-};
-app.use(cors(corsOptions));
+const allowedOrigins = ["https://admin.dpccollege.com"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
+
+// Handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -65,5 +71,5 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   connectDB();
-  console.log(`connection is Live at port no. ${port}`);
+  console.log(`Connection is Live at port no. ${port}`);
 });
