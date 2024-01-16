@@ -55,7 +55,7 @@ const updateEventById = async (req, res) => {
     event.title = updatedEventData.title || event.title;
     event.description = updatedEventData.description || event.description;
 
-   
+    // Update image only if provided in the request
     if (updatedEventData.imageUrl) {
       event.imageUrl = updatedEventData.imageUrl;
     }

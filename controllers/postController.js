@@ -3,30 +3,31 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
 const fs = require("fs");
 
-const createPost = async (req, res) => {
+const createPost = asyncHandler(async (req, res) => {
   try {
     const { caption } = req.body;
     const file = req.files.image;
 
-    const uploadPath = path.join(__dirname, "..", "uploads", file.name);
-
-    file.mv(uploadPath, async (error) => {
-      if (error) {
-        return res.status(500).json({
-          success: false,
-          message: "Error uploading image",
-          error: error.message,
-        });
+    cloudinary.uploader.upload(file.tempFilePath, async (error, result) => {
+      if (file.tempFilePath) {
+        fs.unlinkSync(file.tempFilePath);
       }
 
-      const newPost = new Post({
-        caption,
-        imageUrl: uploadPath,
-      });
+      if (error) {
+        res.status(400).json({
+          success: false,
+          message: "Error uploading image to Cloudinary",
+          error: error.message,
+        });
+      } else {
+        const newPost = new Post({
+          caption,
+          imageUrl: result.url,
+        });
 
-      const savedPost = await newPost.save();
-
-      res.status(201).json({ success: true, data: savedPost });
+        const savedPost = await newPost.save();
+        res.status(201).json({ success: true, data: savedPost });
+      }
     });
   } catch (error) {
     res.status(400).json({
@@ -35,7 +36,7 @@ const createPost = async (req, res) => {
       error: error.message,
     });
   }
-};
+});
 
 const getAllPosts = async (req, res) => {
   try {

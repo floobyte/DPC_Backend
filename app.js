@@ -13,12 +13,11 @@ const noticeRouter = require("./routes/noticeBoardRouter");
 const studentCornerRouter = require("./routes/studentCornerRouter");
 const downloadRouter = require("./routes/downloadDataRouter");
 const admissionRouter = require("./routes/admissionRouter");
-const departmentRouter = "./routes/departmentRouter";
+const departmentRouter = require("./routes/departmentRouter");
 const storyRouter = require("./routes/storyRouter");
 const blogRouter = require("./routes/blogRouter");
 const mentorRouter = require("./routes/mentorRouter");
 const studentRouter = require("./routes/studentRouter");
-
 const app = express();
 require("dotenv/config");
 const fileUpload = require("express-fileupload");
@@ -26,10 +25,8 @@ const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 
-app.use(cors());
-
+app.use(cors({ origin: "*" }));
 app.use(express.json());
-
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -57,5 +54,5 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   connectDB();
-  console.log(`Connection is Live at port no. ${port}`);
+  console.log(`connection is Live at port no. ${port}`);
 });
