@@ -33,6 +33,9 @@ app.use(
   })
 );
 
+// Serve static files from the 'uploads' directory
+app.use("/uploads", express.static("uploads"));
+
 app.use("/api/event", eventRouter);
 app.use("/api/post", postRouter);
 app.use("/api/course", courseRouter);
