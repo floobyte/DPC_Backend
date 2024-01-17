@@ -1,11 +1,35 @@
 const express = require("express");
 const connectDB = require("./db/connectDB");
+const cors = require("cors");
+const fileUpload = require("express-fileupload");
+const errorHandler = require("./middleware/errorHandler");
+
+const app = express();
+require("dotenv/config");
+
+const port = process.env.PORT || 3000;
+
+const allowedOrigins = ["http://admin.dpccollege.com", "http://127.0.0.1:5500"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
+
+app.use(express.json());
+app.use("/uploads", express.static("uploads"));
+
 const eventRouter = require("./routes/eventRouter");
 const postRouter = require("./routes/postRouter");
 const courseRouter = require("./routes/courseRouter");
 const notificationRouter = require("./routes/notificationRouter");
 const authRouter = require("./routes/authRouter");
-const errorHandler = require("./middleware/errorHandler");
 const userRouter = require("./routes/userRouter");
 const adminRouter = require("./routes/adminRouter");
 const staffRouter = require("./routes/StaffRouter");
@@ -18,21 +42,6 @@ const storyRouter = require("./routes/storyRouter");
 const blogRouter = require("./routes/blogRouter");
 const mentorRouter = require("./routes/mentorRouter");
 const studentRouter = require("./routes/studentRouter");
-const app = express();
-require("dotenv/config");
-const fileUpload = require("express-fileupload");
-const cors = require("cors");
-app.use(cors());
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-// app.use(
-//   fileUpload({
-//     useTempFiles: true,
-//   })
-// );
-
-app.use("/uploads", express.static("uploads"));
 
 app.use("/api/event", eventRouter);
 app.use("/api/post", postRouter);
@@ -55,5 +64,5 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   connectDB();
-  console.log(`connection is Live at port no. ${port}`);
+  console.log(`Connection is Live at port no. ${port}`);
 });
