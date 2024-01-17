@@ -22,10 +22,9 @@ const app = express();
 require("dotenv/config");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
-
+app.use(cors());
 const port = process.env.PORT || 3000;
 
-app.use(cors({ origin: "*" }));
 app.use(express.json());
 // app.use(
 //   fileUpload({
