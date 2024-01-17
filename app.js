@@ -27,13 +27,12 @@ const port = process.env.PORT || 3000;
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use(
-  fileUpload({
-    useTempFiles: true,
-  })
-);
+// app.use(
+//   fileUpload({
+//     useTempFiles: true,
+//   })
+// );
 
-// Serve static files from the 'uploads' directory
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api/event", eventRouter);
