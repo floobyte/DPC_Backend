@@ -23,6 +23,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(fileUpload({ useTempFiles: true }));
 app.use("/uploads", express.static("uploads"));
 
 const eventRouter = require("./routes/eventRouter");
@@ -61,6 +62,8 @@ app.use("/b-u/story", storyRouter);
 app.use("/b-u/mentor", mentorRouter);
 
 app.use(errorHandler);
+
+app.options("*", cors());
 
 app.listen(port, () => {
   connectDB();
