@@ -5,9 +5,9 @@ const app = express();
 const cors = require("cors");
 app.use(cors({ origin: "*" }));
 
+require("dotenv/config");
 const port = process.env.PORT || 3000;
 
-require("dotenv/config");
 const fileUpload = require("express-fileupload");
 app.use(express.json());
 
