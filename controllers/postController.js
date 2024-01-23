@@ -1,95 +1,85 @@
 const Post = require("../models/post");
-const fs = require("fs").promises;
+const asyncHandler = require("express-async-handler");
+const cloudinary = require("../configs/cloudinaryConfig");
+const fs = require("fs");
 
-const createPost = async (req, res) => {
+const createPost = asyncHandler(async (req, res) => {
   try {
     const { caption } = req.body;
-    const imageUrl = req.file ? req.file.path : undefined;
+    const file = req.files.image;
 
-    const newPost = new Post({
-      caption,
-      imageUrl,
+    cloudinary.uploader.upload(file.tempFilePath, async (error, result) => {
+      if (file.tempFilePath) {
+        fs.unlinkSync(file.tempFilePath);
+      }
+
+      if (error) {
+        res.status(400).json({
+          success: false,
+          message: "Error uploading image to Cloudinary",
+          error: error.message,
+        });
+      } else {
+        const newPost = new Post({
+          caption,
+          imageUrl: result.url,
+        });
+
+        const savedPost = await newPost.save();
+        res.status(201).json({ success: true, data: savedPost });
+      }
     });
-
-    await newPost.save();
-    res.status(201).json(newPost);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json({
+      success: false,
+      message: "Error creating post",
+      error: error.message,
+    });
   }
-};
+});
 
 const getAllPosts = async (req, res) => {
   try {
     const resultPosts = await Post.find({});
 
-    if (resultPosts.length === 0) {
-      return res.status(404).json({ message: "No posts found." });
-    }
-
     res.json(resultPosts);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json(error);
   }
 };
 
 const getPostById = async (req, res) => {
   try {
-    const postId = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ error: "Invalid post ID." });
-    }
-
-    const post = await Post.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ error: "Post not found." });
-    }
-
-    res.json(post);
+    const resultPost = await Post.findById(req.params.id);
+    res.json(resultPost);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json(error);
   }
 };
 
-const updatePostById = async (req, res) => {};
+const updatePostById = async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const updatedPostData = req.body;
+    const post = await Post.findById(_id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    post.caption = updatedPostData.caption || post.caption;
+    post.imageUrl = updatedPostData.imageUrl || post.imageUrl;
+    const updatedPost = await post.save();
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const deletePost = async (req, res) => {
   try {
-    const postId = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ error: "Invalid post ID." });
-    }
-
-    const post = await Post.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ error: "Post not found." });
-    }
-
-    if (post.imageUrl) {
-      const imagePath = path.join(__dirname, "..", "uploads", post.imageUrl);
-
-      const fileExists = await fs
-        .access(imagePath)
-        .then(() => true)
-        .catch(() => false);
-
-      if (fileExists) {
-        await fs.unlink(imagePath);
-      }
-    }
-
-    await Post.findByIdAndDelete(postId);
-
-    res.json({ message: "Post deleted successfully." });
+    const _id = req.params.id;
+    const deletedPost = await Post.findByIdAndDelete(_id);
+    res.json(deletedPost);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json(error);
   }
 };
 
