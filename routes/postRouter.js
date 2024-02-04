@@ -10,7 +10,7 @@ const {
   deletePost,
 } = require("../controllers/postController");
 
-router.post("/create", validateToken, createPost);
+router.post("/create", createPost);
 router.get("/all", getAllPosts);
 router.get("/:id", getPostById);
 router.put("/update/:id", validateToken, updatePostById);
