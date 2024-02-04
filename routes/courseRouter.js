@@ -10,10 +10,10 @@ const {
   deleteCourseById,
 } = require("../controllers/courseController");
 
-router.post("/create", validateToken, createCourse);
+router.post("/create", createCourse);
 router.get("/all", getAllCourse);
 router.get("/:id", getCourseById);
-router.put("/update/:id", validateToken, updateCourseById);
-router.delete("/delete/:id", validateToken, deleteCourseById);
+router.put("/update/:id", updateCourseById);
+router.delete("/delete/:id", deleteCourseById);
 
 module.exports = router;

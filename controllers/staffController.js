@@ -1,7 +1,7 @@
 const Staff = require("../models/staff");
 const Department = require("../models/department");
 const asyncHandler = require("express-async-handler");
-const cloudinary = require("../configs/cloudinaryConfig");
+
 const fs = require("fs");
 
 const createStaff = asyncHandler(async (req, res) => {
@@ -18,48 +18,33 @@ const createStaff = asyncHandler(async (req, res) => {
       email,
       phone,
       address,
+      imageUrl,
     } = req.body;
 
-    const file = req.files.image;
-
-    cloudinary.uploader.upload(file.tempFilePath, async (error, result) => {
-      if (file.tempFilePath) {
-        fs.unlinkSync(file.tempFilePath);
-      }
-
-      if (error) {
-        return res.status(400).json({
-          success: false,
-          message: "Error uploading image to Cloudinary",
-          error: error.message,
-        });
-      } else {
-        const newStaff = new Staff({
-          name,
-          fatherName,
-          designation,
-          category,
-          dob,
-          department,
-          bloodGroup,
-          appointmentDate,
-          email,
-          phone,
-          address,
-          imageUrl: result.url,
-        });
-
-        const savedStaff = await newStaff.save();
-
-        await Department.findByIdAndUpdate(
-          department,
-          { $push: { staffList: savedStaff._id } },
-          { new: true }
-        );
-
-        res.status(201).json({ success: true, data: savedStaff });
-      }
+    const newStaff = new Staff({
+      name,
+      fatherName,
+      designation,
+      category,
+      dob,
+      department,
+      bloodGroup,
+      appointmentDate,
+      email,
+      phone,
+      address,
+      imageUrl,
     });
+
+    const savedStaff = await newStaff.save();
+
+    await Department.findByIdAndUpdate(
+      department,
+      { $push: { staffList: savedStaff._id } },
+      { new: true }
+    );
+
+    res.status(201).json({ success: true, data: savedStaff });
   } catch (error) {
     res.status(400).json({
       success: false,

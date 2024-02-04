@@ -8,9 +8,9 @@ const {
   deleteStaffById,
 } = require("../controllers/staffController");
 
-router.post("/create", validateToken, createStaff);
+router.post("/create", createStaff);
 router.get("/all", getAllStaff);
 router.get("/:id", getStaffById);
-router.delete("/delete/:id", validateToken, deleteStaffById);
+router.delete("/delete/:id", deleteStaffById);
 
 module.exports = router;
