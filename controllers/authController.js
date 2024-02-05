@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.floobyte.com",
+  host: "mail.dpccollege.com",
   port: 465,
   auth: {
     user: "admin@dpccollege.com",
