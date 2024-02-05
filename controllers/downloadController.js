@@ -3,39 +3,17 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("../configs/cloudinaryConfig");
 const fs = require("fs");
 
-const createDownload = asyncHandler(async (req, res) => {
+const createDownload = async (req, res) => {
   try {
-    const { title } = req.body;
-    const file = req.files.pdf;
+    const { title, url } = req.body;
 
-    if (!file || file.mimetype !== "application/pdf") {
-      return res.status(400).json({
-        success: false,
-        message: "Only PDF files are allowed",
-      });
-    }
-
-    cloudinary.uploader.upload(file.tempFilePath, async (error, result) => {
-      if (file.tempFilePath) {
-        fs.unlinkSync(file.tempFilePath);
-      }
-
-      if (error) {
-        res.status(400).json({
-          success: false,
-          message: "Error uploading pdf to Cloudinary",
-          error: error.message,
-        });
-      } else {
-        const newDownload = new DownloadData({
-          title,
-          url: result.url,
-        });
-
-        const savedDownload = await newDownload.save();
-        res.status(201).json({ success: true, data: savedDownload });
-      }
+    const newDownload = new DownloadData({
+      title,
+      url,
     });
+
+    const savedDownload = await newDownload.save();
+    res.status(201).json({ success: true, data: savedDownload });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -43,9 +21,9 @@ const createDownload = asyncHandler(async (req, res) => {
       error: error.message,
     });
   }
-});
+};
 
-const getAllDownloadData = asyncHandler(async (req, res) => {
+const getAllDownloadData = async (req, res) => {
   try {
     const downloadData = await DownloadData.find();
 
@@ -63,9 +41,9 @@ const getAllDownloadData = asyncHandler(async (req, res) => {
       error: error.message,
     });
   }
-});
+};
 
-const getDownloadDataById = asyncHandler(async (req, res) => {
+const getDownloadDataById = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -91,9 +69,9 @@ const getDownloadDataById = asyncHandler(async (req, res) => {
       error: error.message,
     });
   }
-});
+};
 
-const deleteDownloadData = asyncHandler(async (req, res) => {
+const deleteDownloadData = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -122,7 +100,7 @@ const deleteDownloadData = asyncHandler(async (req, res) => {
       error: error.message,
     });
   }
-});
+};
 
 module.exports = {
   createDownload,

@@ -7,15 +7,15 @@ const transporter = nodemailer.createTransport({
   host: "mail.floobyte.com",
   port: 465,
   auth: {
-    user: "rajiv.s@floobyte.com",
-    pass: "suting@123",
+    user: "admin@dpccollege.com",
+    pass: "anita@dpc",
   },
 });
 
 function sendConfirmationEmailToAdmin(name, email) {
   const mailOptions = {
-    from: "rajiv.s@floobyte.com",
-    to: "rajivsuting@gmail.com",
+    from: "admin@dpccollege.com",
+    to: "admindpc@dpccollege.com",
     subject: "New User Registration Approval",
     html: `
       <p>Hello Admin,</p>
@@ -26,7 +26,7 @@ function sendConfirmationEmailToAdmin(name, email) {
       </ul>
       <p>Please click the following link to approve the registration:</p>
       <a
-        href="http://127.0.0.1:5500/Admin/approval.html?email=${email}"
+        href="https://dpccollege.com/approval.html?email=${email}"
         style="background-color: green; color: white; padding: 10px 15px; text-decoration: none; display: inline-block; cursor: pointer;"
       >
         Approve Registration
