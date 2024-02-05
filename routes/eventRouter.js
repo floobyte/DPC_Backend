@@ -23,7 +23,7 @@ router.post("/create", async (req, res) => {
     });
   }
 });
-router.get("/allevents", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const resultEvents = await eventData.find({});
     res.json(resultEvents);

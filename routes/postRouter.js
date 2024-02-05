@@ -25,7 +25,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.get("/allposts", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const resultPosts = await Post.find({});
 
