@@ -5,28 +5,7 @@ const fs = require("fs");
 
 const createBlog = asyncHandler(async (req, res) => {
   try {
-    const { title, content, category, url } = req.body;
-    let imageUrl = "";
-
-    if (req.files && req.files.image) {
-      const file = req.files.image;
-
-      const result = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload(file.tempFilePath, (error, result) => {
-          if (file.tempFilePath) {
-            fs.unlinkSync(file.tempFilePath);
-          }
-
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        });
-      });
-
-      imageUrl = result.url;
-    }
+    const { title, content, category, url, imageUrl } = req.body;
 
     const newBlog = new Blog({
       title,
@@ -34,6 +13,7 @@ const createBlog = asyncHandler(async (req, res) => {
       category,
       imageUrl,
       url,
+      imageUrl,
     });
 
     const savedBlog = await newBlog.save();

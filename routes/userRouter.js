@@ -9,10 +9,10 @@ const {
   findUserByEmailId,
 } = require("../controllers/userController");
 
-router.get("/all", validateToken, getAllUsers);
+router.get("/all", getAllUsers);
 router.get("/:id", findUserById);
 router.get("/email/:emailId", findUserByEmailId);
 router.delete("/delete/:id", validateToken, deleteUserById);
-router.put("/update/:id", validateToken, updateUser);
+router.put("/update/:id", updateUser);
 
 module.exports = router;
