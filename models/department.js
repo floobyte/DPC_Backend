@@ -9,7 +9,6 @@ const Department = new mongoose.Schema(
     hod: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Staff",
-      unique: false,
     },
     staffList: [
       {

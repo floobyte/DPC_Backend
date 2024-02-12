@@ -6,7 +6,7 @@ const createDepartment = asyncHandler(async (req, res) => {
   try {
     const { departmentName, hod, staffList } = req.body;
 
-    let hodExists = true;
+    let hodExists = null;
 
     if (hod) {
       hodExists = await Staff.findById(hod);
@@ -18,10 +18,12 @@ const createDepartment = asyncHandler(async (req, res) => {
       }
     }
 
+    const updatedStaffList = hodExists ? [...staffList, hod] : staffList;
+
     const newDepartment = new Department({
       departmentName,
       hod: hodExists ? hod : null,
-      staffList,
+      staffList: updatedStaffList,
     });
 
     const savedDepartment = await newDepartment.save();
