@@ -1,106 +1,67 @@
 const DownloadData = require("../models/downloadData");
 const asyncHandler = require("express-async-handler");
-const cloudinary = require("../configs/cloudinaryConfig");
-const fs = require("fs");
 
-const createDownload = async (req, res) => {
-  try {
-    const { title, url } = req.body;
+const createDownload = asyncHandler(async (req, res) => {
+  const { title, url } = req.body;
 
-    const newDownload = new DownloadData({
-      title,
-      url,
-    });
-
-    const savedDownload = await newDownload.save();
-    res.status(201).json({ success: true, data: savedDownload });
-  } catch (error) {
-    res.status(500).json({
+  if (!title || !url) {
+    return res.status(400).json({
       success: false,
-      message: "Error creating download data",
-      error: error.message,
+      message: "Title and URL are required",
     });
   }
-};
 
-const getAllDownloadData = async (req, res) => {
-  try {
-    const downloadData = await DownloadData.find();
+  const newDownload = new DownloadData({
+    title,
+    url,
+  });
 
-    if (downloadData.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No download data found" });
-    }
+  const savedDownload = await newDownload.save();
+  res.status(201).json({ success: true, data: savedDownload });
+});
 
-    res.status(200).json({ success: true, data: downloadData });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error fetching download data",
-      error: error.message,
-    });
+const getAllDownloadData = asyncHandler(async (req, res) => {
+  const downloadData = await DownloadData.find();
+
+  if (downloadData.length === 0) {
+    return res.status(404).json({ success: false, message: "No download data found" });
   }
-};
 
-const getDownloadDataById = async (req, res) => {
+  res.status(200).json({ success: true, data: downloadData });
+});
+
+const getDownloadDataById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const downloadData = await DownloadData.findById(id);
-
-    if (!downloadData) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Download data not found" });
-    }
-
-    res.status(200).json({ success: true, data: downloadData });
-  } catch (error) {
-    if (error.name === "CastError" && error.kind === "ObjectId") {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid ID format" });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Error fetching download data",
-      error: error.message,
-    });
+  if (!id) {
+    return res.status(400).json({ success: false, message: "ID is required" });
   }
-};
 
-const deleteDownloadData = async (req, res) => {
+  const downloadData = await DownloadData.findById(id);
+
+  if (!downloadData) {
+    return res.status(404).json({ success: false, message: "Download data not found" });
+  }
+
+  res.status(200).json({ success: true, data: downloadData });
+});
+
+const deleteDownloadData = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const downloadData = await DownloadData.findById(id);
-
-    if (!downloadData) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Download data not found" });
-    }
-
-    await downloadData.remove();
-    res
-      .status(200)
-      .json({ success: true, message: "Download data deleted successfully" });
-  } catch (error) {
-    if (error.name === "CastError" && error.kind === "ObjectId") {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid ID format" });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Error deleting download data",
-      error: error.message,
-    });
+  if (!id) {
+    return res.status(400).json({ success: false, message: "ID is required" });
   }
-};
+
+  const downloadData = await DownloadData.findById(id);
+
+  if (!downloadData) {
+    return res.status(404).json({ success: false, message: "Download data not found" });
+  }
+
+  await downloadData.remove();
+  res.status(200).json({ success: true, message: "Download data deleted successfully" });
+});
 
 module.exports = {
   createDownload,
