@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
 
-const DownloadData = new mongoose.Schema({
+const DownloadDataSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  url: String,
+  url: {
+    type: String,
+    required: true,
+  },
 });
 
-module.exports = mongoose.model("DownloadData", DownloadData);
+module.exports = mongoose.model("DownloadData", DownloadDataSchema);
