@@ -1,12 +1,14 @@
 const express = require("express");
-const router = new express.Router();
-const validateToken = require("../middleware/validateToken");
+const router = express.Router();
 const {
   createDownload,
   getAllDownloadData,
   getDownloadDataById,
   deleteDownloadData,
 } = require("../controllers/downloadController");
+
+// Add validation middleware if needed
+// const validateToken = require("../middleware/validateToken");
 
 router.post("/create", createDownload);
 router.get("/id/:id", getDownloadDataById);
